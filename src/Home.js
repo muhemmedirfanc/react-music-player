@@ -125,8 +125,8 @@ export default function Home() {
   const mainIconColor = theme.palette.mode === 'dark' ? '#fff' : '#000';
   const lightIconColor = theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
   return (
-    <Grid container style={{ height: '100vh' }} alignContent="center">
-      <Box sx={{ width: '100%', overflow: 'hidden' }}>
+    <Grid container style={{ height: '100vh' }} alignContent="center" sm={12}>
+      <Box sx={{ width: '100%', overflow: 'hidden', paddingRight: '55px', paddingLeft: '20px' }}>
         <Widget>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <CoverImage>
