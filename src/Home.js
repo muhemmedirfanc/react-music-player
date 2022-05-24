@@ -12,9 +12,14 @@ import FastForwardRounded from '@mui/icons-material/FastForwardRounded';
 import FastRewindRounded from '@mui/icons-material/FastRewindRounded';
 import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded';
 import VolumeDownRounded from '@mui/icons-material/VolumeDownRounded';
-import image from '../src/assets/images/ab67616d0000b273806c160566580d6335d1f16c.jpg';
+import imageOne from '../src/assets/images/ab67616d0000b273806c160566580d6335d1f16c.jpg';
+import imageTwo from '../src/assets/images/lovely.jpg';
+import imageThree from '../src/assets/images/fire_on_fire.jpg';
 
-import audio from '../src/assets/images/audio.mp3';
+import songOne from '../src/assets/images/audio.mp3';
+import songTwo from '../src/assets/images/Lovely.mp3';
+import songThree from '../src/assets/images/Fire-On-Fire.mp3';
+
 const WallPaper = styled('div')({
   position: 'absolute',
   width: '100%',
@@ -77,11 +82,33 @@ const TinyText = styled(Typography)({
   letterSpacing: 0.2,
 });
 
+const songs = [
+  {
+    title: 'HOPE',
+    song: songOne,
+    artist: 'XXXXXXTENTACION',
+    image: imageOne,
+  },
+  {
+    title: 'Lovely',
+    song: songTwo,
+    artist: 'Khalid, Billie Eilish',
+    image: imageTwo,
+  },
+  {
+    title: 'Fire on Fire',
+    song: songThree,
+    artist: 'Sam Smith',
+    image: imageThree,
+  },
+];
+
 export default function Home() {
   const theme = useTheme();
   const [position, setPosition] = React.useState(0);
   const [paused, setPaused] = React.useState(true);
-  const [music] = React.useState(new Audio(audio));
+  const [selectedMusic, setSelectedMusic] = React.useState(0);
+  const [music, setMusic] = React.useState(new Audio(songs[selectedMusic].song));
   const [seek, setSeek] = React.useState(false);
   function formatDuration(value) {
     const minute = Math.floor(value / 60);
@@ -122,6 +149,24 @@ export default function Home() {
     };
   };
 
+  const handleForward = () => {
+    let count = 0;
+
+    if (selectedMusic + 1 < songs.length) {
+      setSelectedMusic(selectedMusic + 1);
+      count = selectedMusic + 1;
+    } else {
+      setSelectedMusic(0);
+    }
+
+    music.pause();
+
+    setMusic(new Audio(songs[count].song));
+    music.play();
+    setPaused(false);
+    setPosition(0);
+  };
+
   const mainIconColor = theme.palette.mode === 'dark' ? '#fff' : '#000';
   const lightIconColor = theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
   return (
@@ -130,14 +175,14 @@ export default function Home() {
         <Widget>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <CoverImage>
-              <img alt="can't win - Chilling Sunday" src={image} />
+              <img alt="can't win - Chilling Sunday" src={songs[selectedMusic].image} />
             </CoverImage>
             <Box sx={{ ml: 1.5, minWidth: 0 }}>
               <Typography noWrap>
-                <b>HOPE</b>
+                <b>{songs[selectedMusic].title}</b>
               </Typography>
               <Typography noWrap letterSpacing={-0.25}>
-                Song by XXXTENTACION
+                Song by {songs[selectedMusic].artist}
               </Typography>
             </Box>
           </Box>
@@ -214,7 +259,7 @@ export default function Home() {
                 <PauseRounded sx={{ fontSize: '3rem' }} htmlColor={mainIconColor} />
               )}
             </IconButton>
-            <IconButton aria-label="next song">
+            <IconButton aria-label="next song" onClick={handleForward}>
               <FastForwardRounded fontSize="large" />
             </IconButton>
           </Box>
