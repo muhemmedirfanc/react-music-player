@@ -110,6 +110,7 @@ export default function Home() {
   const [selectedMusic, setSelectedMusic] = React.useState(0);
   const [music, setMusic] = React.useState(new Audio(songs[selectedMusic].song));
   const [seek, setSeek] = React.useState(false);
+  const [musicChanged, setMusicChanged] = React.useState(false);
   function formatDuration(value) {
     const minute = Math.floor(value / 60);
     const secondLeft = value - minute * 60;
@@ -150,22 +151,32 @@ export default function Home() {
   };
 
   const handleForward = () => {
-    let count = 0;
-
     if (selectedMusic + 1 < songs.length) {
       setSelectedMusic(selectedMusic + 1);
-      count = selectedMusic + 1;
     } else {
       setSelectedMusic(0);
     }
 
     music.pause();
-
-    setMusic(new Audio(songs[count].song));
-    music.play();
-    setPaused(false);
+    setPaused(true);
     setPosition(0);
   };
+
+  useEffect(() => {
+    if (music.src !== new Audio(songs[selectedMusic].song).src) {
+      setMusic(new Audio(songs[selectedMusic].song));
+      setMusicChanged(true);
+    }
+  }, [selectedMusic]);
+
+  useEffect(() => {
+    if (musicChanged) {
+      setMusicChanged(false);
+      music.play();
+      setPaused(false);
+      setPosition(0);
+    }
+  }, [musicChanged, music]);
 
   const mainIconColor = theme.palette.mode === 'dark' ? '#fff' : '#000';
   const lightIconColor = theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
@@ -259,7 +270,7 @@ export default function Home() {
                 <PauseRounded sx={{ fontSize: '3rem' }} htmlColor={mainIconColor} />
               )}
             </IconButton>
-            <IconButton aria-label="next song" onClick={handleForward}>
+            <IconButton aria-label="next song" onClick={() => handleForward()}>
               <FastForwardRounded fontSize="large" />
             </IconButton>
           </Box>
